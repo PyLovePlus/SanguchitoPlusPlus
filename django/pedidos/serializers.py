@@ -11,9 +11,9 @@ class ClienteSerializer(serializers.ModelSerializer):
         model = Cliente
         fields = '__all__'
 
-class TamanoSerializer(serializers.ModelSerializer):
+class MedidaSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Tamano
+        model = Medida
         fields = '__all__'
 
 class IngredienteSerializer(serializers.ModelSerializer):

@@ -10,7 +10,7 @@ class Cliente(models.Model):
     nombre = models.CharField(max_length=40)
     apellido = models.CharField(max_length=40)
 
-class Tamano(models.Model):
+class Medida(models.Model):
     nombre = models.CharField(max_length=10)
     precio = models.FloatField()
 

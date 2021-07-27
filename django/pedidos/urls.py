@@ -6,6 +6,8 @@ urlpatterns = [
     path('refrescos/<int:pk>', views.DetalleRefresco.as_view()),
     path('clientes/', views.ListaClientes.as_view()),
     path('clientes/<int:pk>', views.DetalleCliente.as_view()),
-    path('tamanos/', views.ListaTamano.as_view()),
-    path('ingredientes/', views.ListaIngrediente.as_view())
+    path('medidas/', views.ListaTamano.as_view()),
+    path('medidas/<int:pk>', views.DetalleMedida.as_view()),
+    path('ingredientes/', views.ListaIngrediente.as_view()),
+    path('ingredientes/<int:pk>', views.DetalleIngrediente.as_view())
 ]
