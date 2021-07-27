@@ -19,3 +19,11 @@ class ListaClientes(generics.ListCreateAPIView):
 class DetalleCliente(generics.RetrieveUpdateDestroyAPIView):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
+
+class ListaTamano(generics.ListCreateAPIView):
+    queryset = Tamano.objects.all()
+    serializer_class = TamanoSerializer
+
+class ListaIngrediente(generics.ListCreateAPIView):
+    queryset = Ingrediente.objects.all()
+    serializer_class = IngredienteSerializer
