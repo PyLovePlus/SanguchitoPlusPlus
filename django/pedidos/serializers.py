@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from pedidos.models import Refresco, Cliente
+from pedidos.models import Refresco, Cliente, Medida, Ingrediente
 
 class RefrescoSerializer(serializers.ModelSerializer):
     class Meta:
