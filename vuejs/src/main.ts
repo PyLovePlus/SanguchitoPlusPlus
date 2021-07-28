@@ -5,8 +5,10 @@ import vuetify from "./plugins/vuetify";
 
 Vue.config.productionTip = false;
 
+export const URL_BASE = "http://localhost:8081/";
+
 new Vue({
-  router,
-  vuetify,
-  render: (h) => h(App),
+    router,
+    vuetify,
+    render: (h) => h(App),
 }).$mount("#app");
