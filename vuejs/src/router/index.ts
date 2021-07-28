@@ -24,7 +24,13 @@ const routes: Array<RouteConfig> = [
             {
                 name: "ReporteGeneral",
                 path: "/administracion/reporte/general",
-                component: () => import("../views/ReporteGeneralyDia.vue"),
+                component: () => import("../views/ReporteGeneral.vue"),
+            },
+
+            {
+                name: "ReporteDia",
+                path: "/administracion/reporte/dia",
+                component: () => import("../views/ReporteDia.vue"),
             },
         ],
     },

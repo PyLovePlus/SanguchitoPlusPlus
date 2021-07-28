@@ -41,8 +41,8 @@
                             </v-list-item-content>
                         </v-list-item>
 
-                        <v-card-actions>
-                            <v-btn rounded block color="primary"> Ver reporte </v-btn>
+                        <v-card-actions align="center">
+                            <modal-reporte-dia style="width: 100%"></modal-reporte-dia>
                         </v-card-actions>
                     </v-card>
                 </v-col>
@@ -108,7 +108,10 @@
 
 <script lang="ts">
 import Vue from "vue";
+import modalReporteDia from "../components/modalReporteDia.vue";
+
 export default Vue.extend({
+    components: { modalReporteDia },
     data() {
         return {};
     },
