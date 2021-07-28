@@ -1,3 +1,4 @@
+import { VentaClienteDTO } from "../dto/ventaCliente.dto";
 import { VentasIngredienteDTO } from "../dto/ventaIngrediente.dto";
 import { VentasMedidaDTO } from "../dto/ventaMedida.dto";
 import { VentasGeneralDTO } from "../dto/ventasGeneral.dto";
@@ -161,6 +162,75 @@ export const DATOS_REPORTE_INGREDIENTE: VentasIngredienteDTO[] = [
     },
     {
         nombre_ingrediente: "Cebolla",
+        precio_total: 10,
+        ventas: [
+            {
+                fecha: "2021-07-28",
+                ref_venta: 10,
+                cantidad: 5,
+            },
+            {
+                fecha: "2021-07-28",
+                ref_venta: 12,
+                cantidad: 1,
+            },
+            {
+                fecha: "2021-07-28",
+                ref_venta: 13,
+                cantidad: 1,
+            },
+        ],
+    },
+];
+
+export const DATOS_REPORTE_CLIENTES: VentaClienteDTO[] = [
+    {
+        nombre_cliente: "Ricardo",
+        apellido_cliente: "Salvatorelli",
+        precio_total: 569.6,
+        ventas: [
+            {
+                fecha: "2021-07-28",
+                ref_venta: 1,
+                cantidad: 5,
+            },
+            {
+                fecha: "2021-07-28",
+                ref_venta: 2,
+                cantidad: 1,
+            },
+            {
+                fecha: "2021-07-28",
+                ref_venta: 3,
+                cantidad: 2,
+            },
+        ],
+    },
+    {
+        nombre_cliente: "Victoria",
+        apellido_cliente: "Paciello",
+        precio_total: 100,
+        ventas: [
+            {
+                fecha: "2021-07-28",
+                ref_venta: 6,
+                cantidad: 5,
+            },
+            {
+                fecha: "2021-07-28",
+                ref_venta: 7,
+                cantidad: 1,
+            },
+            {
+                fecha: "2021-07-28",
+                ref_venta: 8,
+                cantidad: 26,
+            },
+        ],
+    },
+    {
+        nombre_cliente: "Jose",
+        apellido_cliente: "R FE UCAB",
         precio_total: 10,
         ventas: [
             {

@@ -3,12 +3,14 @@ import { URL_BASE } from "../main";
 import { VentasGeneralDTO } from "./dto/ventasGeneral.dto";
 import { VentasDiaDTO } from "./dto/ventasDia.dto";
 import {
+    DATOS_REPORTE_CLIENTES,
     DATOS_REPORTE_GENERAL,
     DATOS_REPORTE_INGREDIENTE,
     DATOS_REPORTE_MEDIDA,
 } from "./respuestas/reportes";
 import { VentasMedidaDTO } from "./dto/ventaMedida.dto";
 import { VentasIngredienteDTO } from "./dto/ventaIngrediente.dto";
+import { VentaClienteDTO } from "./dto/ventaCliente.dto";
 
 export class ControladorReportes {
     //Reporte 1
@@ -98,6 +100,34 @@ export class ControladorReportes {
                     aux_total += venta.cantidad;
                 }
                 ventaIngrediente.cantidad_total = aux_total;
+            }
+
+            resolve(respuestaDTO);
+        });
+    }
+
+    //Reporte 5
+    public static obtenerVentasPorClientes(): Promise<VentaClienteDTO[]> {
+        return new Promise((resolve, reject) => {
+            /*axios
+            .get(URL_BASE + "api/admin/ventas/ingredientes")
+            .then((respuesta) => {
+                resolve(respuesta.data);
+            })
+            .catch((err) => {
+                reject(err);
+            });*/
+
+            const respuestaDTO: VentaClienteDTO[] = DATOS_REPORTE_CLIENTES;
+            for (const ventaCliente of respuestaDTO) {
+                let aux_total = 0;
+                for (const venta of ventaCliente.ventas) {
+                    aux_total += venta.cantidad;
+                }
+                ventaCliente.cantidad_total = aux_total;
+                ventaCliente.nombre_completo =
+                    ventaCliente.nombre_cliente + " " + ventaCliente.apellido_cliente;
+                ventaCliente.cantidad_compras = ventaCliente.ventas.length;
             }
 
             resolve(respuestaDTO);

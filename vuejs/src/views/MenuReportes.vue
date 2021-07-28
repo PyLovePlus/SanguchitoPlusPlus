@@ -105,10 +105,13 @@
                         </v-list-item>
 
                         <v-card-actions>
-                            <v-btn rounded block color="primary"> Ver reporte </v-btn>
+                            <v-btn rounded block color="primary" :to="{ name: 'ReporteClientes' }">
+                                Ver reporte
+                            </v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-col>
+
                 <v-col md="2"></v-col>
             </v-row>
         </v-container>
