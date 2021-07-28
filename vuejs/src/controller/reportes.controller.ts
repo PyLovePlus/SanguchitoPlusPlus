@@ -2,8 +2,13 @@ import axios from "axios";
 import { URL_BASE } from "../main";
 import { VentasGeneralDTO } from "./dto/ventasGeneral.dto";
 import { VentasDiaDTO } from "./dto/ventasDia.dto";
-import { DATOS_REPORTE_GENERAL, DATOS_REPORTE_MEDIDA } from "./respuestas/reportes";
+import {
+    DATOS_REPORTE_GENERAL,
+    DATOS_REPORTE_INGREDIENTE,
+    DATOS_REPORTE_MEDIDA,
+} from "./respuestas/reportes";
 import { VentasMedidaDTO } from "./dto/ventaMedida.dto";
+import { VentasIngredienteDTO } from "./dto/ventaIngrediente.dto";
 
 export class ControladorReportes {
     //Reporte 1
@@ -68,6 +73,31 @@ export class ControladorReportes {
                     aux_total += venta.cantidad;
                 }
                 ventaMedida.cantidad_total = aux_total;
+            }
+
+            resolve(respuestaDTO);
+        });
+    }
+
+    //Reporte 4
+    public static obtenerVentasPorIngredientes(): Promise<VentasIngredienteDTO[]> {
+        return new Promise((resolve, reject) => {
+            /*axios
+            .get(URL_BASE + "api/admin/ventas/ingredientes")
+            .then((respuesta) => {
+                resolve(respuesta.data);
+            })
+            .catch((err) => {
+                reject(err);
+            });*/
+
+            const respuestaDTO: VentasIngredienteDTO[] = DATOS_REPORTE_INGREDIENTE;
+            for (const ventaIngrediente of respuestaDTO) {
+                let aux_total = 0;
+                for (const venta of ventaIngrediente.ventas) {
+                    aux_total += venta.cantidad;
+                }
+                ventaIngrediente.cantidad_total = aux_total;
             }
 
             resolve(respuestaDTO);

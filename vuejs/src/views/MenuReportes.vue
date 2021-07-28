@@ -81,7 +81,14 @@
                         </v-list-item>
 
                         <v-card-actions>
-                            <v-btn rounded block color="primary"> Ver reporte </v-btn>
+                            <v-btn
+                                rounded
+                                block
+                                color="primary"
+                                :to="{ name: 'ReporteIngrediente' }"
+                            >
+                                Ver reporte
+                            </v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-col>
