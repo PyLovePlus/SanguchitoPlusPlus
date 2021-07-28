@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.request import Request
 from django.core.exceptions import ValidationError
-from pedidos.api.serializers import RefrescoSerializer, ClienteSerializer, MedidaSerializer, IngredienteSerializer
+from pedidos.api.serializers import RefrescoSerializer, ClienteSerializer, MedidaSerializer, IngredienteSerializer, VentaSerializer
 
 # Create your views here.
 class ListaRefrescos(generics.ListCreateAPIView):
@@ -42,16 +42,20 @@ class DetalleIngrediente(generics.RetrieveUpdateDestroyAPIView):
 
 class Pedidos(APIView):
     def post(self, request: Request):
+        # Obtenemos los datos de la solicitud
         cedula = request.data.get('cedula')
         datos_productos = request.data.get('productos')
         id_refrescos = request.data.get('refrescos')
 
+        # Buscamos al cliente respectivo o retornamos 404
         cliente = get_object_or_404(Cliente, pk=cedula)
 
+        # Buscamos los refrescos especificados, si alguno no existe retornamos 404
         refrescos = []
         for id in id_refrescos:
             refrescos.append(get_object_or_404(Refresco, pk=id))
 
+        # Generamos los datos de los sandwiches a crear, incluyendo medida e ingredientes
         productos = []
         for datos in datos_productos:
             if not datos.get('id_medida'):
@@ -67,22 +71,25 @@ class Pedidos(APIView):
 
             productos.append({ "medida": medida, "ingredientes": ingredientes })
 
+        # Creamos la venta y la guardamos
         venta = Venta.objects.create(cliente=cliente)
         venta.save()
+
+        # Agregamos los refrescos seleccionados a la venta
         for refresco in refrescos:
             venta.refrescos.add(refresco)
 
+        # Agregamos los sandwiches a la venta
         for producto in productos:
             sandwich = Sandwich.objects.create(medida=producto.get('medida'), venta=venta)
             sandwich.save()
             for ingrediente in producto.get('ingredientes'):
                 sandwich.ingredientes.add(ingrediente)
 
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_201_CREATED)
 
 class VentasGenerales(APIView):
-
-    def get(self, request: Request):
+    def get(self, request: Request, *args, **kwargs):
         if not request.query_params.get('dia'):
             ventas = Venta.objects.all()
         else:
@@ -91,48 +98,15 @@ class VentasGenerales(APIView):
             except ValidationError:
                 return Response(data='La fecha especificada es invalida.', status=status.HTTP_400_BAD_REQUEST)
 
-        lista = []
+        respuesta = []
         for venta in ventas:
-            sandwiches = Sandwich.objects.filter(venta=venta)
-            productos = []
-            for sandwich in sandwiches:
-                productos.append({
-                    'medida': sandwich.medida.nombre,
-                    'precio': sandwich.medida.precio,
-                    'ingredientes': [
-                        {
-                            'nombre': ingrediente.nombre,
-                            'precio': ingrediente.precio
-                        }
-                        for ingrediente
-                        in Ingrediente.objects.filter(sandwich=sandwich)
-                    ]
-                })
+            respuesta.append(VentaSerializer.serializar(venta))
+        return Response(data=respuesta, status=status.HTTP_200_OK)
 
-            datos = {
-                'ref_venta': venta.pk,
-                'nombre_cliente': venta.cliente.nombre,
-                'apellido_cliente': venta.cliente.apellido,
-                'fecha': venta.fecha,
-                'total': sum([
-                    producto.get('precio')
-                    + sum([
-                            ingrediente.get('precio')
-                            for ingrediente
-                                in producto.get('ingredientes')]
-                        )
-                        for producto
-                        in productos]
-                ),
-                'productos': [
-                    {
-                        'nombre': f'Sandwich {producto.get("medida")}',
-                        'ingredientes': [ingrediente.get('nombre') for ingrediente in producto.get('ingredientes')]
-                    }
-                    for producto
-                    in productos
-                ]
-            }
-            lista.append(datos)
-
-        return Response(data=lista, status=status.HTTP_200_OK)
+class VentasPorCliente(APIView):
+    def get(self, request: Request, *args, **kwargs):
+        respuesta = []
+        clientes = Cliente.objects.all()
+        for cliente in clientes:
+            respuesta.append(VentaSerializer.serializarPorCliente(cliente=cliente))
+        return Response(data=respuesta, status=status.HTTP_200_OK)

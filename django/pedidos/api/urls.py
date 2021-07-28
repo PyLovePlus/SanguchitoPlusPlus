@@ -11,5 +11,6 @@ urlpatterns = [
     path('ingredientes/', views.ListaIngrediente.as_view()),
     path('ingredientes/<int:pk>', views.DetalleIngrediente.as_view()),
     path('pedidos', views.Pedidos.as_view()),
-    path('admin/ventas', views.VentasGenerales.as_view())
+    path('admin/ventas', views.VentasGenerales.as_view()),
+    path('admin/ventas/clientes', views.VentasPorCliente.as_view())
 ]
