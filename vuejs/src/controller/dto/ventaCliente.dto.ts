@@ -9,4 +9,5 @@ export interface VentaClienteDTO {
         cantidad: number;
     }[];
     cantidad_total?: number;
+    cantidad_compras?: number;
 }
