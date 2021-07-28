@@ -4,6 +4,7 @@ from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.request import Request
+from django.core.exceptions import ValidationError
 from pedidos.serializers import RefrescoSerializer, ClienteSerializer, MedidaSerializer, IngredienteSerializer
 
 # Create your views here.
@@ -79,3 +80,59 @@ class Pedidos(APIView):
 
         return Response(status=status.HTTP_200_OK)
 
+class VentasGenerales(APIView):
+
+    def get(self, request: Request):
+        if not request.query_params.get('dia'):
+            ventas = Venta.objects.all()
+        else:
+            try:
+                ventas = Venta.objects.filter(fecha=request.query_params.get('dia'))
+            except ValidationError:
+                return Response(data='La fecha especificada es invalida.', status=status.HTTP_400_BAD_REQUEST)
+
+        lista = []
+        for venta in ventas:
+            sandwiches = Sandwich.objects.filter(venta=venta)
+            productos = []
+            for sandwich in sandwiches:
+                productos.append({
+                    'medida': sandwich.medida.nombre,
+                    'precio': sandwich.medida.precio,
+                    'ingredientes': [
+                        {
+                            'nombre': ingrediente.nombre,
+                            'precio': ingrediente.precio
+                        }
+                        for ingrediente
+                        in Ingrediente.objects.filter(sandwich=sandwich)
+                    ]
+                })
+
+            datos = {
+                'ref_venta': venta.pk,
+                'nombre_cliente': venta.cliente.nombre,
+                'apellido_cliente': venta.cliente.apellido,
+                'fecha': venta.fecha,
+                'total': sum([
+                    producto.get('precio')
+                    + sum([
+                            ingrediente.get('precio')
+                            for ingrediente
+                                in producto.get('ingredientes')]
+                        )
+                        for producto
+                        in productos]
+                ),
+                'productos': [
+                    {
+                        'nombre': f'Sandwich {producto.get("medida")}',
+                        'ingredientes': [ingrediente.get('nombre') for ingrediente in producto.get('ingredientes')]
+                    }
+                    for producto
+                    in productos
+                ]
+            }
+            lista.append(datos)
+
+        return Response(data=lista, status=status.HTTP_200_OK)
