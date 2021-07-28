@@ -1,5 +1,5 @@
 from django.urls import path
-from pedidos import views
+from pedidos.api import views
 
 urlpatterns = [
     path('refrescos/', views.ListaRefrescos.as_view()),

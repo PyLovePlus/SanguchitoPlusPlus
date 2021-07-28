@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.request import Request
 from django.core.exceptions import ValidationError
-from pedidos.serializers import RefrescoSerializer, ClienteSerializer, MedidaSerializer, IngredienteSerializer
+from pedidos.api.serializers import RefrescoSerializer, ClienteSerializer, MedidaSerializer, IngredienteSerializer
 
 # Create your views here.
 class ListaRefrescos(generics.ListCreateAPIView):
