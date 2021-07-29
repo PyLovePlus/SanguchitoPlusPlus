@@ -49,6 +49,16 @@ const routes: Array<RouteConfig> = [
             },
         ],
     },
+    {
+        path: "/caja",
+        name: "MenuCaja",
+        component: () => import("../views/MenuCaja.vue"),
+    },
+    {
+        name: "CrearPedido",
+        path: "/caja/crear-pedido",
+        component: () => import("../views/CrearPedido.vue"),
+    },
 
     {
         path: "/about",
