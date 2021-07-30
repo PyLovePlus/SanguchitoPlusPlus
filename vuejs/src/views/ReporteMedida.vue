@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { VentasDiaDTO } from "../controller/dto/ventasDia.dto";
+import { VentasMedidaDTO } from "@/controller/dto/ventaMedida.dto";
 import { ControladorReportes } from "../controller/reportes.controller";
 
 export default Vue.extend({
@@ -43,7 +43,7 @@ export default Vue.extend({
         return {
             expanded: [],
             estaCargando: true,
-            datos: [] as VentasDiaDTO[],
+            datos: [] as VentasMedidaDTO[],
             generalEncabezado: [
                 { text: "Tamaño", value: "nombre_medida" },
                 { text: "Total consumido (USD)", value: "precio_total" },
