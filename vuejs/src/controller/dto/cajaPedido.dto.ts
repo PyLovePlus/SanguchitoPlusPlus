@@ -3,6 +3,6 @@ export interface PedidoDTO {
     productos: {
         id_medida: number,
         ingredientes: number[]
-    },
+    }[],
     refrescos: number[]
 }

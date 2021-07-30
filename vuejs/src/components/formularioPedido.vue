@@ -349,10 +349,10 @@ export default Vue.extend({
                 producto: string,
                 medida: string,
                 precio: number,
-                ingredientes?: number[],
+                ingredientes?: IngredienteDTO[],
                 idRefresco?: number
             }[],
-            refrescos: [] as RefrescoDTO & {nombreYprecio: string}[],
+            refrescos: [] as unknown as (RefrescoDTO & {nombreYprecio: string})[],
             dialogCliente: false as boolean,
             dialogSandwich: false as boolean,
             dialogRefrescos: false as boolean,
@@ -368,7 +368,7 @@ export default Vue.extend({
             cedulaCliente: null as null | number,
             ingredientes: [] as IngredienteDTO[],
             ingredientesAmostrar: [] as IngredienteDTO[],
-            medidasSandwich: [] as MedidaDTO [] & {nombreYprecio: string},
+            medidasSandwich: [] as (MedidaDTO & {nombreYprecio: string})[],
             ingredienteSeleccionado: 0 as number,
             ingredientesSeleccionados: [] as IngredienteDTO[],
             refrescosSeleccionados: [] as any[],
@@ -380,9 +380,9 @@ export default Vue.extend({
     methods: {
         crearCliente(){
             const cliente: ClienteDTO = {
-                cedula: this.cliente.cedula,
-                nombre: this.cliente.nombre,
-                apellido: this.cliente.apellido
+                cedula: this.cliente.cedula!,
+                nombre: this.cliente.nombre!,
+                apellido: this.cliente.apellido!
             }
 
             ControladorCaja.crearCliente(cliente).then((respuesta) =>{
@@ -404,7 +404,7 @@ export default Vue.extend({
         },
         agregarIngrediente(){
 
-            this.ingredientesSeleccionados.push(this.ingredientes.find(ing => ing.id == this.ingredienteSeleccionado))
+            this.ingredientesSeleccionados.push(this.ingredientes.find(ing => ing.id == this.ingredienteSeleccionado)!)
             this.ingredienteSeleccionado = 0
             const filtroIngredientes = this.ingredientesSeleccionados.map(ing => ing.id)
             this.ingredientesAmostrar = this.ingredientes.filter(ingrediente => {
@@ -414,7 +414,7 @@ export default Vue.extend({
          agregarSandwich(){
              const ingredientes = this.ingredientesSeleccionados.map(ing => {return ing})
              if(ingredientes.length ==0){
-                 ingredientes.push(this.ingredientes.find(ing => ing.id==1))
+                 ingredientes.push(this.ingredientes.find(ing => ing.id==1)!)
              }
              this.productos.push({
                  producto: "Sandwich",
@@ -456,21 +456,21 @@ export default Vue.extend({
             this.refrescosSeleccionados = []
             this.limpiarRefresco()
         },
-        mostrarIngredientesDeSandwich(sandwich){
+        mostrarIngredientesDeSandwich(sandwich: any){
             this.dialogIngredientes = true
             this.sandwichConIngredientes = sandwich
         },
-        eliminarProducto(producto){
+        eliminarProducto(producto: any){
 
             const indiceEliminarProducto = this.productos.indexOf(producto)
             this.productos.splice(indiceEliminarProducto, 1)
         },
         enviarPedido(){
-            const refrescos = this.productos.filter(producto => producto.producto != "Sandwich").map(producto => producto.idRefresco)
+            const refrescos: number[] = this.productos.filter(producto => producto.producto != "Sandwich").map(producto => producto.idRefresco) as number[]
             const productos = this.productos.filter(producto => producto.producto == "Sandwich").map(producto => {
                     return {
-                        id_medida: this.medidasSandwich.find(medida => medida.nombre == producto.medida).id,
-                        ingredientes: producto.ingredientes.map(ingrediente => ingrediente.id)
+                        id_medida: this.medidasSandwich.find(medida => medida.nombre == producto.medida)!.id as number,
+                        ingredientes: producto.ingredientes!.map(ingrediente => ingrediente.id) as number[]
                     }
                 }
             )
@@ -482,6 +482,8 @@ export default Vue.extend({
             }
 
             ControladorCaja.crearPedido(pedido).then((respuesta) =>{
+                console.log("RESPUESTA PEDIDO", respuesta)
+
                 this.snackbarMensaje = respuesta
                 this.snackbar = true
                 

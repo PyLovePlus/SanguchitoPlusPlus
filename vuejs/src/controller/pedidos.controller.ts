@@ -9,6 +9,7 @@ import { RefrescoDTO } from "./dto/cajaRefresco.dto";
 export class ControladorCaja {
     //crear pedido
     public static crearPedido(pedido: PedidoDTO): Promise<string> {
+        console.log("pedido recibido",pedido)
         return new Promise((resolve, reject) => {
             axios
                 .post(URL_BASE + "api/pedidos", pedido)
