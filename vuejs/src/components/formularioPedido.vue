@@ -88,11 +88,12 @@
                 <v-btn class="mb-2" text color="primary" :to="{ name: 'MenuCaja' }">
                   Cancelar  
                 </v-btn>
-                <v-btn class="mb-2" color="primary" @click="enviarPedido" :disabled="productos.length == 0">
+                <v-btn class="mb-2" color="primary" @click="enviarPedido" :disabled="existenSandwichs">
                     Crear Pedido
                 </v-btn>
             </v-card-actions>
         </v-card>
+        <!-- Dialog Cliente-->
         <v-dialog v-model="dialogCliente" width=500>
             <v-card>
                 <v-card-title class="text-h5">
@@ -145,7 +146,7 @@
                             <v-select
                                 v-model="medidaSeleccionada"
                                 :items="medidasSandwich"
-                                item-text="nombre"
+                                item-text="nombreYprecio"
                                 item-value="id"
                                 :menu-props="{ maxHeight: '400' }"
                                 label="Tamaño"
@@ -217,7 +218,7 @@
                             <v-select
                                 v-model="refrescoSeleccionado"
                                 :items="refrescos"
-                                item-text="nombre"
+                                item-text="nombreYprecio"
                                 item-value="id"
                                 :menu-props="{ maxHeight: '400' }"
                                 label="Refresco"
@@ -289,17 +290,17 @@
             </v-card>
         </v-dialog>
         <v-snackbar
-            v-model="pedidoCreado"
+            v-model="snackbar"
             top
         >
-            {{ snackbarPedidoMsg }}
+            {{ snackbarMensaje }}
 
             <template v-slot:action="{ attrs }">
                 <v-btn
                 color="success"
                 text
                 v-bind="attrs"
-                @click="pedidoCreado = false"
+                @click="snackbar = false"
                 >
                     Aceptar
                 </v-btn>
@@ -313,6 +314,10 @@ import Vue from "vue";
 //import { CajaClienteDTO } from "../controller/dto/ventaCliente.dto";
 import { ControladorCaja } from "../controller/pedidos.controller";
 import { PedidoDTO } from "../controller/dto/cajaPedido.dto";
+import { ClienteDTO } from "../controller/dto/cajaCliente.dto";
+import { IngredienteDTO } from "../controller/dto/cajaIngrediente.dto";
+import { RefrescoDTO } from "../controller/dto/cajaRefresco.dto";
+import { MedidaDTO } from "../controller/dto/cajaMedida.dto";
 
 export default Vue.extend({
     data() {
@@ -340,118 +345,55 @@ export default Vue.extend({
                     sortable: false
                 },
             ],
-            productos: [
-                // {
-                //     producto: "Sandwich",
-                //     medida: "Triple",
-                //     precio: 20,
-                //     ingredientes: [1, 2]
-                // },
-                // {
-                //     producto: "aRefresco",
-                //     medida: "500 ml",
-                //     precio: 70,
-                //     ingredientes: [1, 2]
-                // }
-            ] as {
+            productos: [] as {
                 producto: string,
                 medida: string,
                 precio: number,
                 ingredientes?: number[],
                 idRefresco?: number
             }[],
-            refrescos: [
-                {
-                    id:1,
-                    precio: 20,
-                    nombre: "Refresco1",
-                    mililitros: 40,
-                },
-                {
-                    id:2,
-                    precio: 30,
-                    nombre: "Refresco2",
-                    mililitros: 40,
-                },
-            ],
+            refrescos: [] as RefrescoDTO & {nombreYprecio: string}[],
             dialogCliente: false as boolean,
             dialogSandwich: false as boolean,
             dialogRefrescos: false as boolean,
             dialogIngredientes: false as boolean,
-            pedidoCreado: false as boolean,
-            snackbarPedidoMsg: "" as string,
-            clientes: [
-                {
-                    cedula: 12345678,
-                    nombreCompleto: "12345678 - Tom Holland"
-                }
-            ] ,
-            //as CajaClienteDTO[],
-            // ingredientes: [] CajaIngredientesDTO[],
-            // refrescos: [] as CajaRefrescoDTO[],
-            // medidasSandwich: [] as CajaMedidasDTO[],
+            snackbar: false as boolean,
+            snackbarMensaje: "" as string,
+            clientes: [] as {cedula: number, nombreCompleto: string}[] ,
             cliente: {
-                cedula: null,
-                nombre: null,
-                apellido:null
+                cedula: null as number | null,
+                nombre: null as string | null,
+                apellido:null as string | null
             },
             cedulaCliente: null as null | number,
-            ingredientes: [
-                {
-                    nombre: "Queso - 20 $",
-                    id: 1,
-                    precio: 20
-                },
-                {
-                    nombre: "Jamon - 20 $",
-                    id: 2,
-                    precio: 20
-                },
-                {
-                    nombre: "Maiz - 20 $",
-                    id: 3,
-                    precio: 20
-                },
-                {
-                    nombre: "Pollo - 20 $",
-                    id: 4,
-                    precio: 20
-                }
-            ],
-            ingredientesAmostrar: [] as {nombre: string, id: number, precio: number}[],
-            medidasSandwich: [
-                {
-                    id: 1,
-                    precio: 10,
-                    nombre: "Individual"
-                },
-                {
-                    id: 2,
-                    precio: 20,
-                    nombre: "Doble"
-                },
-                {
-                    id: 3,
-                    precio: 30,
-                    nombre: "Triple"
-                }
-            ] as {id: number, precio: number, nombre:string} [],
+            ingredientes: [] as IngredienteDTO[],
+            ingredientesAmostrar: [] as IngredienteDTO[],
+            medidasSandwich: [] as MedidaDTO [] & {nombreYprecio: string},
             ingredienteSeleccionado: 0 as number,
-            ingredientesSeleccionados: [] as any[],
+            ingredientesSeleccionados: [] as IngredienteDTO[],
             refrescosSeleccionados: [] as any[],
             refrescoSeleccionado: 0 as number,
             medidaSeleccionada: null as null | number,
-            //sandwiches: [] as {id_medida: number, ingredientes: any[], precio: number}[],
             sandwichConIngredientes: {},
-            //as CajaClienteDTO
         };
     },
     methods: {
         crearCliente(){
-            alert(Object.values(this.cliente))
-            // ControlarCaja.crearCliente(cliente).then((respuesta) =>{
+            const cliente: ClienteDTO = {
+                cedula: this.cliente.cedula,
+                nombre: this.cliente.nombre,
+                apellido: this.cliente.apellido
+            }
 
-            // })
+            ControladorCaja.crearCliente(cliente).then((respuesta) =>{
+        
+                this.snackbarMensaje = respuesta
+                this.snackbar = true
+
+                this.obtenerClientes()
+            })
+
+
             this.limpiarCliente()   
         },
         limpiarCliente(){
@@ -483,15 +425,6 @@ export default Vue.extend({
                             ),
                  ingredientes: ingredientes
              })
-
-            // this.sandwiches.push({
-            //     ingredientes: this.ingredientesSeleccionados.map(ing => {return ing}),
-            //     id_medida: this.medidaSeleccionada!,
-            //     precio: this.medidasSandwich.find(medida => medida.id === this.medidaSeleccionada)!.precio
-            //                 + this.ingredientesSeleccionados.reduce(
-            //                     (total,ing) => {return total + ing.precio},0
-            //                 )
-            // })
             this.limpiarSandwich()
         },
         limpiarSandwich(){
@@ -507,7 +440,6 @@ export default Vue.extend({
         limpiarRefresco(){
             this.dialogRefrescos = false
             this.refrescoSeleccionado = 0
-            //this.refrescosSeleccionados = []
         },
         agregarRefresco(){
             this.refrescosSeleccionados.push(this.refrescos.find(refresco => refresco.id == this.refrescoSeleccionado))
@@ -550,47 +482,78 @@ export default Vue.extend({
             }
 
             ControladorCaja.crearPedido(pedido).then((respuesta) =>{
-                this.snackbarPedidoMsg = respuesta
-                this.pedidoCreado = true
+                this.snackbarMensaje = respuesta
+                this.snackbar = true
+                
+                this.limpiarPedido()
             })
+        },
+
+        limpiarPedido(){
+            this.productos=[]
+            this.cedulaCliente=null
+        },
+
+        obtenerClientes(){
+            // Obtenemos clientes
+            ControladorCaja.obtenerClientes().then((respuesta) => {
+                
+                this.clientes = respuesta.map(resp => {
+                    return {
+                        cedula: resp.cedula,
+                        nombreCompleto: `${resp.cedula} - ${resp.nombre + " " + resp.apellido}`
+                    }
+                })
+            });
         }
     },
+
     computed: {
         totalSandwichs: function(): number{
             return this.productos.filter(producto => producto.producto == "Sandwich").reduce((total, sandwich) => total+sandwich.precio, 0)
         },
         totalRefrescos: function(): number{
             return this.productos.filter(producto => producto.producto !== "Sandwich").reduce((total, refresco) => total+refresco.precio, 0)
+        },
+        existenSandwichs: function(): boolean{
+            return !(this.productos.filter(prod => prod.producto == 'Sandwich').length > 0)
         }
     },
     mounted(){
         //Obtenemos ingredientes
-        // ControladorCaja.obtenerIngredientes().then((respuesta) => {
-        //     console.log("[RECIBIMOS] ", respuesta);
-        //     this.datos = respuesta;
-        //     this.estaCargando = false;
-        // });
+        ControladorCaja.obtenerIngredientes().then((respuesta) => {
+            this.ingredientes= respuesta.map(resp =>{
+                return {
+                    nombre: `${resp.nombre} - ${resp.precio} $`,
+                    id: resp.id,
+                    precio: resp.precio
+                }
+            })
+        });
 
-        // //Obtenemos medidas de sandwich
-        // ControladorCaja.obtenerMedidas().then((respuesta) => {
-        //     console.log("[RECIBIMOS] ", respuesta);
-        //     this.datos = respuesta;
-        //     this.estaCargando = false;
-        // });
+        // Obtenemos medidas de sandwich
+        ControladorCaja.obtenerMedidas().then((respuesta) => {
+            
+            this.medidasSandwich = respuesta.map(resp => {
+                return{
+                    ...resp,
+                    nombreYprecio: `${resp.nombre} - ${resp.precio} $`
+                }
+            })
+        });
 
-        // //Obtenemos refrescos
-        // ControladorCaja.obtenerRefrescos().then((respuesta) => {
-        //     console.log("[RECIBIMOS] ", respuesta);
-        //     this.datos = respuesta;
-        //     this.estaCargando = false;
-        // });
+        // Obtenemos refrescos
+        ControladorCaja.obtenerRefrescos().then((respuesta) => {
+            
+            this.refrescos = respuesta.map(resp => {
+                return {
+                    ...resp,
+                    nombreYprecio: `${resp.nombre} - ${resp.precio} $`
+                }
+            })
+        });
 
-        // //Obtenemos clientes
-        // ControladorCaja.obtenerClientes().then((respuesta) => {
-        //     console.log("[RECIBIMOS] ", respuesta);
-        //     this.datos = respuesta;
-        //     this.estaCargando = false;
-        // });
+        this.obtenerClientes()
     }
 });
 </script>
