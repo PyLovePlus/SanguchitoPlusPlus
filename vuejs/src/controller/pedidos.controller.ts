@@ -11,7 +11,7 @@ export class ControladorCaja {
     public static crearPedido(pedido: PedidoDTO): Promise<string> {
         return new Promise((resolve, reject) => {
             axios
-                .post(URL_BASE + "api/pedidos")
+                .post(URL_BASE + "api/pedidos", pedido)
                 .then((respuesta) => {
                     resolve("Pedido creado con exito");
                 })
