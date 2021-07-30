@@ -23,7 +23,7 @@
                         <ul>
                             <li v-for="venta in item.ventas" :key="venta.ref_venta" class="mt-2">
                                 Venta <b>#{{ venta.ref_venta }}</b> - {{ venta.fecha }} - (total:
-                                {{ venta.cantidad }})
+                                {{ venta.cantidad_productos }})
                             </li>
                         </ul>
                     </template>
