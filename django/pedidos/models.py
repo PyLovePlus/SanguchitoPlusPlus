@@ -41,8 +41,8 @@ class Venta(models.Model):
     def __str__(self):
         return f'[#{self.pk} - {self.fecha}] {self.cliente}'
 
-    refrescos = models.ManyToManyField(Refresco, null=True)
-    fecha = models.DateField(default=now().day)
+    refrescos = models.ManyToManyField(Refresco)
+    fecha = models.DateField(auto_now_add=True)
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
 
 

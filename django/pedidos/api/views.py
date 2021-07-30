@@ -43,7 +43,7 @@ class DetalleIngrediente(generics.RetrieveUpdateDestroyAPIView):
 class Pedidos(APIView):
     def post(self, request: Request):
         # Obtenemos los datos de la solicitud
-        cedula = request.data.get('cedula')
+        cedula = request.data.get('cedula_cliente')
         datos_productos = request.data.get('productos')
         id_refrescos = request.data.get('refrescos')
 
