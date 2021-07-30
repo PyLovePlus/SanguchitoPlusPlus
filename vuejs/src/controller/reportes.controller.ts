@@ -111,7 +111,7 @@ export class ControladorReportes {
     public static obtenerVentasPorClientes(): Promise<VentaClienteDTO[]> {
         return new Promise((resolve, reject) => {
             axios
-                .get(URL_BASE + "api/admin/ventas/ingredientes")
+                .get(URL_BASE + "api/admin/ventas/clientes")
                 .then((respuesta) => {
                     //resolve(respuesta.data);
 
