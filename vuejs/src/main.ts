@@ -5,7 +5,7 @@ import vuetify from "./plugins/vuetify";
 
 Vue.config.productionTip = false;
 
-export const URL_BASE = "http://localhost:8081/";
+export const URL_BASE = "http://localhost:8000/";
 
 new Vue({
     router,
