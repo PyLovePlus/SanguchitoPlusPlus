@@ -40,9 +40,9 @@ import Vue from "vue";
 export default Vue.extend({
     data() {
         return {
-            fecha: null,
+            fecha: null as string | null,
             esValido: true,
-            fecha_maxima: null,
+            fecha_maxima: null as string | null,
         };
     },
     methods: {
@@ -58,7 +58,7 @@ export default Vue.extend({
         },
         ejecutarReporte() {
             if (this.validar()) {
-                this.$router.push({ name: "ReporteDia", params: { fecha: this.fecha } });
+                this.$router.push({ name: "ReporteDia", params: { fecha: this.fecha as string} });
             }
         },
     },
