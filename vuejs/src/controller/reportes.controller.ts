@@ -119,7 +119,7 @@ export class ControladorReportes {
                     for (const ventaCliente of respuestaDTO) {
                         let aux_total = 0;
                         for (const venta of ventaCliente.ventas) {
-                            aux_total += venta.cantidad;
+                            aux_total += venta.cantidad_productos;
                         }
                         ventaCliente.cantidad_total = aux_total;
                         ventaCliente.nombre_completo =

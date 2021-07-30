@@ -6,7 +6,7 @@ export interface VentaClienteDTO {
     ventas: {
         fecha: string;
         ref_venta: number;
-        cantidad: number;
+        cantidad_productos: number;
     }[];
     cantidad_total?: number;
     cantidad_compras?: number;
