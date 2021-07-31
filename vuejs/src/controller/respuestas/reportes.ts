@@ -192,17 +192,17 @@ export const DATOS_REPORTE_CLIENTES: VentaClienteDTO[] = [
             {
                 fecha: "2021-07-28",
                 ref_venta: 1,
-                cantidad: 5,
+                cantidad_productos: 5,
             },
             {
                 fecha: "2021-07-28",
                 ref_venta: 2,
-                cantidad: 1,
+                cantidad_productos: 1,
             },
             {
                 fecha: "2021-07-28",
                 ref_venta: 3,
-                cantidad: 2,
+                cantidad_productos: 2,
             },
         ],
     },
@@ -214,17 +214,17 @@ export const DATOS_REPORTE_CLIENTES: VentaClienteDTO[] = [
             {
                 fecha: "2021-07-28",
                 ref_venta: 6,
-                cantidad: 5,
+                cantidad_productos: 5,
             },
             {
                 fecha: "2021-07-28",
                 ref_venta: 7,
-                cantidad: 1,
+                cantidad_productos: 1,
             },
             {
                 fecha: "2021-07-28",
                 ref_venta: 8,
-                cantidad: 26,
+                cantidad_productos: 26,
             },
         ],
     },
@@ -236,17 +236,17 @@ export const DATOS_REPORTE_CLIENTES: VentaClienteDTO[] = [
             {
                 fecha: "2021-07-28",
                 ref_venta: 10,
-                cantidad: 5,
+                cantidad_productos: 5,
             },
             {
                 fecha: "2021-07-28",
                 ref_venta: 12,
-                cantidad: 1,
+                cantidad_productos: 1,
             },
             {
                 fecha: "2021-07-28",
                 ref_venta: 13,
-                cantidad: 1,
+                cantidad_productos: 1,
             },
         ],
     },
