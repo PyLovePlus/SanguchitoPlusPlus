@@ -110,3 +110,11 @@ class VentasPorCliente(APIView):
         for cliente in clientes:
             respuesta.append(VentaSerializer.serializarPorCliente(cliente=cliente))
         return Response(data=respuesta, status=status.HTTP_200_OK)
+
+class VentasPorMedida(APIView):
+    def get(self, request: Request, *args, **kwargs):
+        respuesta = []
+        medidas = Medida.objects.all()
+        for medida in medidas:
+            respuesta.append(MedidaSerializer.serializarMedida(medida=medida))
+        return Response(data=respuesta, status=status.HTTP_200_OK)
