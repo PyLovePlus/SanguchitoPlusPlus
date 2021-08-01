@@ -303,9 +303,7 @@
                   :key="ingrediente.id"
                   class="pb-0 primary--text text-subtitle-1 ingrediente"
                 >
-                  <span v-if="ingrediente.id != 1">
-                    {{ ingrediente.nombre }}
-                  </span>
+                  {{ ingrediente.nombre }}
                 </li>
               </ul>
             </v-col>
@@ -434,16 +432,16 @@ export default Vue.extend({
         (ing) => ing.id
       );
       this.ingredientesAmostrar = this.ingredientes.filter((ingrediente) => {
-        return !filtroIngredientes.includes(ingrediente.id);
+        return (
+          !filtroIngredientes.includes(ingrediente.id) && ingrediente.id != 1
+        );
       });
     },
     agregarSandwich() {
       const ingredientes = this.ingredientesSeleccionados.map((ing) => {
         return ing;
       });
-      if (ingredientes.length == 0) {
-        ingredientes.push(this.ingredientes.find((ing) => ing.id == 1)!);
-      }
+      ingredientes.push(this.ingredientes.find((ing) => ing.id == 1)!);
       this.productos.push({
         producto: "Sandwich",
         medida: this.medidasSandwich.find(
