@@ -118,3 +118,11 @@ class VentasPorMedida(APIView):
         for medida in medidas:
             respuesta.append(VentaSerializer.serializarMedida(medida=medida))
         return Response(data=respuesta, status=status.HTTP_200_OK)
+
+class VentasPorIngrediente(APIView):
+    def get(self, request: Request, *args, **kwargs):
+        respuesta = []
+        ingredientes = Ingrediente.objects.all()
+        for ingrediente in ingredientes:
+            respuesta.append(VentaSerializer.serializarIngrediente(ingrediente=ingrediente))
+        return Response(data=respuesta, status=status.HTTP_200_OK)

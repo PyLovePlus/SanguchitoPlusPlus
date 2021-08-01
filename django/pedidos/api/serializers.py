@@ -104,3 +104,19 @@ class VentaSerializer(serializers.ModelSerializer):
             'precio_total': sum([venta.get('monto') for venta in datos]),
             'ventas': datos
         }
+
+    @classmethod
+    def serializarIngrediente(cls, ingrediente: Ingrediente):
+        ventas = Venta.objects.filter(sandwich__ingrediente=ingrediente)
+        ingredientes = []
+        for venta in ventas:
+            ingredientes.append({
+                'fecha': venta.fecha,
+                'cantidad': cls.calcular_cantidad_productos(venta=venta),
+                'monto': ingrediente.precio
+            })
+        return {
+            'nombre_ingrediente': ingrediente.nombre,
+            'precio': sum([venta.get('monto') for venta in ventas]),
+            'ventas': ingredientes
+        }
