@@ -17,29 +17,6 @@ class MedidaSerializer(serializers.ModelSerializer):
         model = Medida
         fields = '__all__'
 
-    @classmethod
-    def serializarMedida(cls, venta: Venta):
-        medidas = Medida.objects.filter(venta=venta)
-        ventas = []
-        for medida in medidas:
-            fecha = Venta.fecha,
-            ventas.append({
-                'nombre': f'Medida {medida.nombre}',
-                'fecha': f'Fecha {fecha.fecha}',
-                'precioTotal': sum(cls.calcularTotalMontoMedida(venta, medida)),
-            })
-        return ventas
-
-    @classmethod
-    def calcularTotalMontoMedida(cls, venta: Venta, medida: Medida):
-        monto = 0
-        sandwiches = Sandwich.objects.filter(venta=venta)
-        for sandwich in sandwiches:
-            if(sandwich.medida == medida.medida):
-                monto += sandwich.medida.precio
-            ingredientes = Ingrediente.objects.filter(sandwich=sandwich)
-            monto += sum([ingrediente.precio for ingrediente in ingredientes])
-        return monto
 
 class IngredienteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -110,3 +87,20 @@ class VentaSerializer(serializers.ModelSerializer):
             ingredientes = Ingrediente.objects.filter(sandwich=sandwich)
             monto += sum([ ingrediente.precio for ingrediente in ingredientes])
         return monto
+
+    @classmethod
+    def serializarMedida(cls, medida: Medida):
+        ventas = Venta.objects.filter(sandwich__medida=medida)
+        datos = []
+        for venta in ventas:
+            datos.append({
+                'fecha': venta.fecha,
+                'ref_venta': venta.pk,
+                'cantidad': cls.calcular_cantidad_productos(venta=venta),
+                'monto': cls.calcular_monto_total(venta=venta)
+            })
+        return {
+            'nombre_medida': medida.nombre,
+            'precio_total': sum([venta.get('monto') for venta in datos]),
+            'ventas': datos
+        }
