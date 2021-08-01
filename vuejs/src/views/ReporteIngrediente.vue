@@ -17,6 +17,8 @@
                     :loading="estaCargando"
                     loading-text="Consultando ventas..."
                     style="width: 100%"
+                    sort-by="precio_total"
+                    sort-desc="false"
                 >
                     <!--CONTENIDO EXPANDIDO-->
                     <template v-slot:expanded-item="{ item }">

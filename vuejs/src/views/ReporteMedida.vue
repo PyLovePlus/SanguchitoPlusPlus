@@ -17,6 +17,8 @@
                     :loading="estaCargando"
                     loading-text="Consultando ventas..."
                     style="width: 100%"
+                    sort-by="precio_total"
+                    sort-desc="false"
                 >
                     <!--CONTENIDO EXPANDIDO-->
                     <template v-slot:expanded-item="{ item }">
@@ -35,7 +37,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { VentasMedidaDTO } from "@/controller/dto/ventaMedida.dto";
+import { VentasMedidaDTO } from "../controller/dto/ventaMedida.dto";
 import { ControladorReportes } from "../controller/reportes.controller";
 
 export default Vue.extend({

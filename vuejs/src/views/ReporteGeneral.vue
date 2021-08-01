@@ -17,6 +17,8 @@
                     :loading="estaCargando"
                     loading-text="Consultando ventas..."
                     style="width: 100%"
+                    sort-by="fecha"
+                    sort-desc="false"
                 >
                     <!--CONTENIDO EXPANDIDO-->
                     <template v-slot:expanded-item="{ item }">
@@ -60,7 +62,7 @@ export default Vue.extend({
                 { text: "Nro. Venta", value: "ref_venta" },
                 { text: "Cliente", value: "nombre_completo" },
                 { text: "Fecha", value: "fecha" },
-                { text: "Total", value: "total" },
+                { text: "Total ($)", value: "total" },
                 { text: "Cant. Sandwich", value: "cantidad_sandwich" },
                 { text: "", value: "data-table-expand" },
             ],
