@@ -79,6 +79,10 @@ class VentaSerializer(serializers.ModelSerializer):
         return len(Sandwich.objects.filter(venta=venta))
 
     @classmethod
+    def calcular_cantidad_productos_por_medida(cls, venta: Venta, medida: Medida):
+        return len(Sandwich.objects.filter(venta=venta, medida=medida))
+
+    @classmethod
     def calcular_monto_total(cls, venta: Venta):
         monto = 0
         sandwiches = Sandwich.objects.filter(venta=venta)
@@ -89,15 +93,25 @@ class VentaSerializer(serializers.ModelSerializer):
         return monto
 
     @classmethod
+    def calcular_monto_total_por_medida(cls, venta: Venta, medida: Medida):
+        monto = 0
+        sandwiches = Sandwich.objects.filter(venta=venta, medida=medida)
+        for sandwich in sandwiches:
+            monto += sandwich.medida.precio
+            ingredientes = Ingrediente.objects.filter(sandwich=sandwich)
+            monto += sum([ingrediente.precio for ingrediente in ingredientes])
+        return monto
+
+    @classmethod
     def serializarMedida(cls, medida: Medida):
-        ventas = Venta.objects.filter(sandwich__medida=medida)
+        ventas = Venta.objects.filter(sandwich__medida=medida).distinct()
         datos = []
         for venta in ventas:
             datos.append({
                 'fecha': venta.fecha,
                 'ref_venta': venta.pk,
-                'cantidad': cls.calcular_cantidad_productos(venta=venta),
-                'monto': cls.calcular_monto_total(venta=venta)
+                'cantidad': cls.calcular_cantidad_productos_por_medida(venta=venta, medida=medida),
+                'monto': cls.calcular_monto_total_por_medida(venta=venta, medida=medida)
             })
         return {
             'nombre_medida': medida.nombre,
@@ -107,16 +121,19 @@ class VentaSerializer(serializers.ModelSerializer):
 
     @classmethod
     def serializarIngrediente(cls, ingrediente: Ingrediente):
-        ventas = Venta.objects.filter(sandwich__ingrediente=ingrediente)
-        ingredientes = []
+        ventas_ingrediente = []
+        ventas = Venta.objects.all()
         for venta in ventas:
-            ingredientes.append({
+            datos = {
+                'ref_venta': venta.pk,
                 'fecha': venta.fecha,
-                'cantidad': cls.calcular_cantidad_productos(venta=venta),
-                'monto': ingrediente.precio
-            })
+                'cantidad': len(Sandwich.objects.filter(venta=venta, ingredientes__exact=ingrediente))
+            }
+            if datos.get('cantidad') > 0:
+                ventas_ingrediente.append(datos)
+
         return {
             'nombre_ingrediente': ingrediente.nombre,
-            'precio': sum([venta.get('monto') for venta in ventas]),
-            'ventas': ingredientes
+            'precio_total': ingrediente.precio * sum([venta.get('cantidad') for venta in ventas_ingrediente]),
+            'ventas': ventas_ingrediente
         }
